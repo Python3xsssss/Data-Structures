@@ -90,4 +90,4 @@ public:
 	bool Full() { return (size == MAX_STACK_SIZE); }
 };
 
-#endif // !_STACK_H_
+#endif
