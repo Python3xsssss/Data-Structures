@@ -1,4 +1,4 @@
-#include "Stack.h"
+#include "stack_on_array.h"
 #include <gtest.h>
 
 TEST(Stack, can_create_stack)
