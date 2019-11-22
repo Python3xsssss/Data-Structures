@@ -9,7 +9,13 @@ int main(int argc, char* argv[])
 {
 	Stack<char> st;
 	string tmp;
-	cin >> tmp;
+	if (argc > 1)
+		tmp = argv[1];
+	else
+	{
+		cout << "Enter the formula" << endl;
+		cin >> tmp;
+	}
 	bool flag = true;
 	size_t i = 0;
 	while ((tmp[i] != '\0') && flag)
