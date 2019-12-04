@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 #define MAX_STACK_SIZE 10000
 
 typedef unsigned int size_t;
@@ -53,6 +51,12 @@ public:
 		}
 	}
 
+	~Stack()
+	{
+		while (top != nullptr)
+			Pop();
+	}
+
 	void Push(ValType elem)
 	{
 		if (size == MAX_STACK_SIZE)
@@ -64,6 +68,7 @@ public:
 		top = tmp;
 		size++;
 	}
+
 	ValType Pop()
 	{
 		if (size == 0)
@@ -79,15 +84,17 @@ public:
 
 		return tmp_data;
 	}
+
 	ValType Top()
 	{
 		if (size == 0)
 			throw "Error: stack underflow";
 		return top->data;
 	}
+
 	size_t GetSize() { return size; }
 	bool Empty() { return (size == 0); }
 	bool Full() { return (size == MAX_STACK_SIZE); }
 };
 
-#endif // !_STACK_H_
+#endif
