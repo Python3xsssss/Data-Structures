@@ -10,15 +10,21 @@ int main()
 	List<int> st;
 	for (int i = 0; i < 10; i++)
 		st.Push_top(i);
+	cout << "List: ";
 	st.Print();
-	st.Insert(5, 22);
+	if (st.IsLooped())
+		cout << "There's a loop in the list." << endl;
+	else
+		cout << "There's no loop in the list." << endl;
+	st.Reverse();
+	cout << "Reversed list: ";
 	st.Print();
-	st.Push_bot(23);
-	st.Print();
-	st.Pop();
-	st.Print();
-	st.Delete(9);
-	st.Print();
-	cout << st.Top() << endl;
+
+	List<int> ls(7, 2);
+	cout << endl <<"Created new list. Is there a loop?" << endl;
+	if (ls.IsLooped())
+		cout << "Yes, there's a loop." << endl;
+	else
+		cout << "No, there's no loop." << endl;
 	_getch();
 }

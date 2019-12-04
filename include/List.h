@@ -19,6 +19,7 @@ private:
 	Node *top;
 	size_t size;
 	Node* Prev(Node*);
+	Node* Find(size_t);
 
 public:
 	class Iterator
@@ -39,22 +40,27 @@ public:
 	Iterator begin() const;
 	Iterator end() const;
 
-	List() : top(nullptr), size(0) {}
+	List() : top(NULL), size(0) {}
+	List(size_t);
 	List(const List&);
+	List(size_t, size_t);
 	~List();
+
 	void Push_top(ValType);
 	void Push_bot(ValType);
 	ValType Pop();
-	void Insert(size_t index, ValType data);
-	void Delete(size_t index);
-	ValType Top();
-	bool Empty() { return (size == 0); }
-	void Print() const 
-	{
-		for (Iterator it = begin(); it != end(); it++)
-			cout << *it << ' ';
-		cout << endl;
-	}
+	void Insert(size_t, ValType);
+	void Delete(size_t);
+	void Set(size_t, ValType);
+	ValType Get(size_t) const;
+	ValType operator[](size_t) const;
+	ValType Top() const;
+	bool Empty() const { return size; }
+	size_t GetSize() const { return size; }
+	void Print() const;
+
+	bool IsLooped();
+	bool Reverse();
 };
 
 template <typename ValType>
@@ -96,20 +102,60 @@ typename List<ValType>::Iterator List<ValType>::end() const
 	return Iterator(NULL);
 }
 
+
+template <typename ValType>
+typename List<ValType>::Node* List<ValType>::Prev(List<ValType>::Node* node)
+{
+	if (Empty() || (node == top))
+		return NULL;
+	Node* tmp = head;
+	while (tmp->next != node)
+		tmp = tmp->next;
+	return tmp;
+}
+
+template <typename ValType>
+typename List<ValType>::Node* List<ValType>::Find(size_t index)
+{
+	Node* tmp = top;
+	for (size_t i = 0; i < index; i++)
+		tmp = tmp->next;
+	
+	return tmp;
+}
+
+
+template <typename ValType>
+List<ValType>::List(size_t sz)
+{
+	size = sz;
+	top = NULL;
+	for (int i = 0; i < s; i++)
+	{
+		if (Node* tmp = new Node)
+		{
+			tmp->next = top;
+			top = tmp;
+		}
+		else
+			throw "Error: failed to allocate memory";
+	}
+}
+
 template <typename ValType>
 List<ValType>::List(const List<ValType>& ls)
 {
 	size = ls.size;
-	top = nullptr;
+	top = NULL;
 	Node* input_node = ls.top;
-	Node* cur_node, * prev_node = nullptr;
-	while (input_node != nullptr)
+	Node* cur_node, * prev_node = NULL;
+	while (input_node != NULL)
 	{
 		cur_node = new Node;
 		cur_node->data = input_node->data;
-		cur_node->next = nullptr;
+		cur_node->next = NULL;
 
-		if (top == nullptr)
+		if (top == NULL)
 		{
 			top = cur_node;
 			prev_node = cur_node;
@@ -122,6 +168,33 @@ List<ValType>::List(const List<ValType>& ls)
 
 		input_node = input_node->next;
 	}
+}
+
+template <typename ValType>
+List<ValType>::List(size_t sz, size_t loop_index)
+{
+	if (sz < 2 || loop_index > sz - 2)
+		throw "Error: failed to create a looped list";
+
+	size = sz;
+	if (Node* loop = new Node)
+	{
+		top = loop;
+		for (int i = 1; i < size; i++)
+		{
+			if (Node* tmp = new Node)
+			{
+				if (i == size - loop_index - 1)
+					loop->next = tmp;
+				tmp->next = top;
+				top = tmp;
+			}
+			else
+				throw "Error: failed to allocate memory";
+		}
+	}
+	else
+		throw "Error: failed to allocate memory";
 }
 
 template <typename ValType>
@@ -182,7 +255,7 @@ ValType List<ValType>::Pop()
 template <typename ValType>
 void List<ValType>::Insert(size_t index, ValType data)
 {
-	if ((index <= 0) || (index >= size))
+	if (index >= size)
 		throw "Error: incorrect index";
 
 	Node* tmp = top;
@@ -204,7 +277,7 @@ void List<ValType>::Insert(size_t index, ValType data)
 template <typename ValType>
 void List<ValType>::Delete(size_t index)
 {
-	if ((index <= 0) || (index >= size))
+	if (index >= size)
 		throw "Error: incorrect index";
 
 	Node* tmp = top;
@@ -217,9 +290,39 @@ void List<ValType>::Delete(size_t index)
 	size--;
 }
 
+template <typename ValType>
+void List<ValType>::Set(size_t index, ValType data)
+{
+	if (index >= size)
+		throw "Error: incorrect index";
+
+	Node* tmp = Find(index);
+	tmp->data = data;
+}
+
 
 template <typename ValType>
-ValType List<ValType>::Top()
+ValType List<ValType>::Get(size_t index) const
+{
+	if (index >= size)
+		throw "Error: incorrect index";
+
+	Node* tmp = Find(index);
+	return tmp->data;
+}
+
+template <typename ValType>
+ValType List<ValType>::operator[](size_t index) const
+{
+	if (index >= size)
+		throw "Error: incorrect index";
+
+	Node* tmp = Find(index);
+	return tmp->data;
+}
+
+template <typename ValType>
+ValType List<ValType>::Top() const
 {
 	if (size == 0)
 		throw "Error: list is empty";
@@ -227,14 +330,57 @@ ValType List<ValType>::Top()
 }
 
 template <typename ValType>
-typename List<ValType>::Node* List<ValType>::Prev(List<ValType>::Node* node)
+void List<ValType>::Print() const
 {
-	if (Empty() || (node == top)) 
-		return NULL;
-	Node* tmp = head;
-	while (tmp->next != node)
-		tmp = tmp->next;
-	return tmp;
+	for (Iterator it = begin(); it != end(); it++)
+		cout << *it << ' ';
+	cout << endl;
+}
+
+template <typename ValType>
+bool List<ValType>::IsLooped()
+{
+	if (size < 2)
+		return false;
+
+	Node* ptr1 = top->next, * ptr2 = top;
+	while (ptr1 != NULL && ptr1 != ptr2)
+	{
+		ptr1 = ptr1->next;
+		if (ptr1 != NULL)
+			ptr1 = ptr1->next;
+		ptr2 = ptr2->next;
+	}
+
+	return ptr1;
+}
+
+
+template <typename ValType>
+bool List<ValType>::Reverse()
+{
+	if (size < 2)
+		return true;
+
+	Node* ptr1 = NULL, * ptr2 = top, * ptr3 = top->next;
+	while (ptr3 != NULL && ptr3 != top)
+	{
+		ptr2->next = ptr1;
+		ptr1 = ptr2;
+		ptr2 = ptr3;
+		ptr3 = ptr3->next;
+	}
+
+	ptr2->next = ptr1;
+	if (ptr3 == NULL)
+		top = ptr2;
+	else
+	{
+		ptr3->next = ptr2;
+		top = ptr3;
+	}
+
+	return (!ptr3);
 }
 
 #endif // !_LIST_H_
