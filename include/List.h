@@ -34,7 +34,7 @@ public:
 		bool operator==(const Iterator& it) const { return (cur_node == it.cur_node); }
 		bool operator!=(const Iterator& it) const { return (cur_node != it.cur_node); }
 		ValType operator*() const;
-		Node* operator->() { return cur_node; }
+		Node* operator->() const { return cur_node; }
 		Iterator operator++();
 		Iterator operator++(int);
 	};
@@ -55,10 +55,10 @@ public:
 	void Insert(size_t, ValType);
 	void Delete(size_t);
 	void Set(size_t, ValType);
-	ValType Get(size_t) const;
-	ValType operator[](size_t) const;
+	ValType Get(size_t);
+	ValType& operator[](size_t);
 	ValType Top() const;
-	bool Empty() const { return size; }
+	bool Empty() const { return (size == 0); }
 	size_t GetSize() const { return size; }
 	void Print() const;
 
@@ -151,7 +151,7 @@ List<ValType>::List(size_t sz)
 {
 	size = sz;
 	top = NULL;
-	for (int i = 0; i < s; i++)
+	for (int i = 0; i < size; i++)
 	{
 		if (Node* tmp = new Node)
 		{
@@ -344,7 +344,7 @@ void List<ValType>::Set(size_t index, ValType data)
 
 
 template <typename ValType>
-ValType List<ValType>::Get(size_t index) const
+ValType List<ValType>::Get(size_t index)
 {
 	if (index >= size)
 		throw "Error: incorrect index";
@@ -354,7 +354,7 @@ ValType List<ValType>::Get(size_t index) const
 }
 
 template <typename ValType>
-ValType List<ValType>::operator[](size_t index) const
+ValType& List<ValType>::operator[](size_t index)
 {
 	if (index >= size)
 		throw "Error: incorrect index";
