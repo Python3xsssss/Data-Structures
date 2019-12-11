@@ -34,7 +34,9 @@ public:
 		bool operator==(const Iterator& it) const { return (cur_node == it.cur_node); }
 		bool operator!=(const Iterator& it) const { return (cur_node != it.cur_node); }
 		ValType operator*() const;
-		void operator++(int);
+		Node* operator->() { return cur_node; }
+		Iterator operator++();
+		Iterator operator++(int);
 	};
 
 	Iterator begin() const;
@@ -48,7 +50,8 @@ public:
 
 	void Push_top(ValType);
 	void Push_bot(ValType);
-	ValType Pop();
+	ValType Pop_top();
+	ValType Pop_bot();
 	void Insert(size_t, ValType);
 	void Delete(size_t);
 	void Set(size_t, ValType);
@@ -82,10 +85,28 @@ typename ValType List<ValType>::Iterator::operator*() const
 }
 
 template <typename ValType>
-typename void List<ValType>::Iterator::operator++(int)
+typename List<ValType>::Iterator List<ValType>::Iterator::operator++()
 {
 	if (cur_node)
+	{
 		cur_node = cur_node->next;
+
+		return *this;
+	}
+	else
+		throw "Error: out of range";
+}
+
+template <typename ValType>
+typename List<ValType>::Iterator List<ValType>::Iterator::operator++(int)
+{
+	if (cur_node)
+	{
+		List<ValType>::Iterator out(*this);
+		cur_node = cur_node->next;
+
+		return out;
+	}
 	else
 		throw "Error: out of range";
 }
@@ -201,7 +222,7 @@ template <typename ValType>
 List<ValType>::~List()
 {
 	while (top)
-		Pop();
+		Pop_top();
 }
 
 template <typename ValType>
@@ -235,21 +256,42 @@ void List<ValType>::Push_bot(ValType elem)
 		throw "Error: failed to allocate memory";
 }
 
+
 template <typename ValType>
-ValType List<ValType>::Pop()
+ValType List<ValType>::Pop_top()
 {
 	if (size == 0)
 		throw "Error: list is empty";
 
-	Node* tmp;
-	ValType tmp_data = top->data;
+	Node* tmp = top;
+	ValType top_data = top->data;
 
-	tmp = top;
 	top = top->next;
 	delete tmp;
 	size--;
 
-	return tmp_data;
+	return top_data;
+}
+
+
+template <typename ValType>
+ValType List<ValType>::Pop_bot()
+{
+	if (size == 0)
+		throw "Error: list is empty";
+
+	Node* tmp = top;
+	for (size_t i = 1; i < size - 1; i++)
+		tmp = tmp->next;
+
+
+	Node* bot = tmp->next;
+	tmp->next = bot->next;
+	ValType bot_data = bot->data;
+	delete bot;
+	size--;
+
+	return bot_data;
 }
 
 template <typename ValType>
@@ -259,7 +301,7 @@ void List<ValType>::Insert(size_t index, ValType data)
 		throw "Error: incorrect index";
 
 	Node* tmp = top;
-	for (int i = 1; i <= index - 1; i++)
+	for (size_t i = 1; i <= index - 1; i++)
 		tmp = tmp->next;
 
 	Node* following = tmp->next;
@@ -281,7 +323,7 @@ void List<ValType>::Delete(size_t index)
 		throw "Error: incorrect index";
 
 	Node* tmp = top;
-	for (int i = 1; i <= index - 1; i++)
+	for (size_t i = 1; i <= index - 1; i++)
 		tmp = tmp->next;
 
 	Node* following = tmp->next;

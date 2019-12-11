@@ -12,12 +12,22 @@ int main()
 		st.Push_top(i);
 	cout << "List: ";
 	st.Print();
+
 	if (st.IsLooped())
 		cout << "There's a loop in the list." << endl;
 	else
 		cout << "There's no loop in the list." << endl;
+
 	st.Reverse();
 	cout << "Reversed list: ";
+	st.Print();
+
+	st.Pop_top();
+	cout << "List after Pop_top: ";
+	st.Print();
+
+	st.Pop_bot();
+	cout << "List after Pop_bot: ";
 	st.Print();
 
 	List<int> ls(7, 2);
