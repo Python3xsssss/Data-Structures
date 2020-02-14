@@ -5,6 +5,7 @@
 #include <iostream>
 
 using std::size_t;
+using std::ostream;
 
 template <typename ValType>
 class List
@@ -28,6 +29,7 @@ public:
 		Node* cur_node;
 
 	public:
+		Iterator() : cur_node(NULL) {}
 		Iterator(Node* nd) : cur_node(nd) {}
 		Iterator(const Iterator& it) : cur_node(it.cur_node) {}
 		Iterator& operator= (const Iterator&);
@@ -37,6 +39,8 @@ public:
 		Node* operator->() const { return cur_node; }
 		Iterator operator++();
 		Iterator operator++(int);
+
+		friend class List;
 	};
 
 	Iterator begin() const;
@@ -64,6 +68,9 @@ public:
 
 	bool IsLooped();
 	bool Reverse();
+
+	template <typename ValType>
+	friend ostream& operator<<(ostream& out, List<ValType>& ls);
 };
 
 template <typename ValType>
@@ -281,9 +288,11 @@ ValType List<ValType>::Pop_bot()
 		throw "Error: list is empty";
 
 	Node* tmp = top;
-	for (size_t i = 1; i < size - 1; i++)
-		tmp = tmp->next;
+	//for (size_t i = 1; i < size - 1; i++)
+		//tmp = tmp->next;
 
+	while (tmp->next->next != NULL)
+		tmp = tmp->next;
 
 	Node* bot = tmp->next;
 	tmp->next = bot->next;
@@ -425,4 +434,13 @@ bool List<ValType>::Reverse()
 	return (!ptr3);
 }
 
+
+template <typename ValType>
+ostream& operator<<(ostream& out, List<ValType>& ls)
+{
+	for (List<ValType>::Iterator it = ls.begin(); it != ls.end(); it++)
+		out << *it << ' ';
+
+	return out;
+}
 #endif // !_LIST_H_
