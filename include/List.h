@@ -56,8 +56,10 @@ public:
 	void Push_bot(ValType);
 	ValType Pop_top();
 	ValType Pop_bot();
-	void Insert(size_t, ValType);
-	void Delete(size_t);
+	void Insert(Node* prev, ValType data);
+	void Insert_by_index(size_t, ValType);
+	void Delete(Node* prev);
+	void Delete_by_index(size_t);
 	void Set(size_t, ValType);
 	ValType Get(size_t);
 	ValType& operator[](size_t);
@@ -303,8 +305,29 @@ ValType List<ValType>::Pop_bot()
 	return bot_data;
 }
 
+
 template <typename ValType>
-void List<ValType>::Insert(size_t index, ValType data)
+void List<ValType>::Insert(Node* prev, ValType data)
+{
+	Node* tmp = top;
+	while(tmp != prev)
+		tmp = tmp->next;
+
+	Node* following = tmp->next;
+	if (Node* new_elem = new Node)
+	{
+		new_elem->data = data;
+		new_elem->next = following;
+		tmp->next = new_elem;
+		size++;
+	}
+	else
+		throw "Error: failed to allocate memory";
+}
+
+
+template <typename ValType>
+void List<ValType>::Insert_by_index(size_t index, ValType data)
 {
 	if (index >= size)
 		throw "Error: incorrect index";
@@ -325,8 +348,23 @@ void List<ValType>::Insert(size_t index, ValType data)
 		throw "Error: failed to allocate memory";
 }
 
+
 template <typename ValType>
-void List<ValType>::Delete(size_t index)
+void List<ValType>::Delete(Node* prev)
+{
+	Node* tmp = top;
+	while (tmp != prev)
+		tmp = tmp->next;
+
+	Node* target = tmp->next;
+	tmp->next = target->next;
+	delete target;
+	size--;
+}
+
+
+template <typename ValType>
+void List<ValType>::Delete_by_index(size_t index)
 {
 	if (index >= size)
 		throw "Error: incorrect index";
@@ -335,9 +373,9 @@ void List<ValType>::Delete(size_t index)
 	for (size_t i = 1; i <= index - 1; i++)
 		tmp = tmp->next;
 
-	Node* following = tmp->next;
-	tmp->next = following->next;
-	delete following;
+	Node* target = tmp->next;
+	tmp->next = target->next;
+	delete target;
 	size--;
 }
 
