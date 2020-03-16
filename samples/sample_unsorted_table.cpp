@@ -1,42 +1,38 @@
-#include <iostream>
-#include <string>
-#include "stack_on_array.h"
+#include "unsorted_table.h"
+#include "Polynomials.h"
 #include <conio.h>
 
-using namespace std;
+using std::cin;
 
-int main(int argc, char* argv[])
+void main()
 {
-	Stack<char> st;
-	string tmp;
-	if (argc > 1)
-		tmp = argv[1];
-	else
-	{
-		cout << "Enter the formula" << endl;
-		cin >> tmp;
-	}
-	bool flag = true;
-	size_t i = 0;
-	while ((tmp[i] != '\0') && flag)
-	{
-		if ((tmp[i] == '(') || (tmp[i] == '{') || (tmp[i] == '['))
-			st.Push(tmp[i]);
-		else if (st.GetSize() > 0)
-		{
-			char comp = st.Top();
-			if ((tmp[i] == ')') && (comp == '(') || (tmp[i] == '}') && (comp == '{') || (tmp[i] == ']') && (comp == '['))
-				st.Pop();
-			else
-				flag = false;
-		}
-		else
-			flag = false;
-			
-		i++;
-	}
-	if (st.GetSize() > 0)
-		flag = false;
-	cout << endl << flag << endl;
+	string str1;
+
+	cout << "Enter the polynomial 1: " << endl;
+	getline(cin, str1);
+	Polynomial pol1(str1);
+	cout << "Enter the polynomial 2: " << endl;
+	getline(cin, str1);
+	Polynomial pol2(str1);
+	cout << "Enter the polynomial 3: " << endl;
+	getline(cin, str1);
+	Polynomial pol3(str1);
+	cout << "Enter the polynomial 4: " << endl;
+	getline(cin, str1);
+	Polynomial pol4(str1);
+
+	UnsortedTable<Polynomial> table(3);
+
+	table.Insert("123", pol1);
+	table.Insert("124", pol2);
+	table.Insert("125", pol3);
+
+	cout << table << endl;
+	cout << endl << endl;
+
+	table.Insert("126", pol4);
+	
+	cout << table << endl;
+
 	_getch();
 }

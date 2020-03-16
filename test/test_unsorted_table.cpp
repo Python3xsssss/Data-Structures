@@ -1,97 +1,66 @@
-#include "stack_on_array.h"
+#include "unsorted_table.h"
+#include "Polynomials.h"
 #include <gtest.h>
 
-TEST(Stack, can_create_stack)
+TEST(UnsortedTable, can_create_unsorted_table)
 {
-  ASSERT_NO_THROW(Stack<int> s(1));
+  ASSERT_NO_THROW(UnsortedTable<Polynomial> s(1));
 }
 
 
-TEST(Stack, can_create_copied_stack)
+TEST(UnsortedTable, can_find_elem)
 {
-	Stack<int> s(1);
-	s.Push(1);
-	ASSERT_NO_THROW(Stack<int> s_c(s));
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_NO_THROW(s.Find("12"));
 }
 
 
-TEST(Stack, can_pop_element)
+TEST(UnsortedTable, throws_when_finding_elem_with_nonexisting_id)
 {
-	Stack<int> s(5);
-	s.Push(3);
-	s.Push(1);
-	s.Pop();
-	EXPECT_EQ(3, s.Top());
-}
-
-TEST(Stack, can_push_elem)
-{
-	Stack<int> s(5);
-	ASSERT_NO_THROW(s.Push(14));
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_ANY_THROW(s.Find("21"));
 }
 
 
-TEST(Stack, can_get_size)
+TEST(UnsortedTable, can_insert_elem)
 {
-	Stack<int> s(5);
-	s.Push(1);
-	EXPECT_EQ(1, s.GetSize());
-}
-
-TEST(Stack, can_get_top_elem)
-{
-	Stack<int> s(5);
-	s.Push(3);
-	EXPECT_EQ(3, s.Top());
+	UnsortedTable<Polynomial> s(1);
+	ASSERT_NO_THROW(s.Insert("12", Polynomial("x^2")));
 }
 
 
-TEST(Stack, empty_stack_is_empty)
+TEST(UnsortedTable, throws_when_inserting_elem_with_the_same_id)
 {
-	Stack<int> s(10);
-	EXPECT_EQ(true, s.Empty());
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_ANY_THROW(s.Insert("12", Polynomial("x^2")));
 }
 
-TEST(Stack, not_empty_stack_is_not_empty)
+
+TEST(UnsortedTable, can_create_copied_unsorted_table)
 {
-	Stack<int> s(1);
-	s.Push(1);
-	EXPECT_EQ(false, s.Empty());
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_NO_THROW(UnsortedTable<Polynomial> s_c(s));
 }
 
-TEST(Stack, full_stack_is_full)
+
+
+TEST(UnsortedTable, can_delete_element)
 {
-	Stack<int> s(5);
-	for (size_t i = 0; i < 5; i++)
-		s.Push(1);
-	EXPECT_EQ(true, s.Full());
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_NO_THROW(s.Delete("12"));
 }
 
-TEST(Stack, not_full_stack_is_not_full)
-{
-	Stack<int> s(5);
-	s.Push(1);
-	EXPECT_EQ(false, s.Full());
-}
 
-TEST(Stack, throws_when_gets_top_elem_from_empty_stack)
+TEST(UnsortedTable, throws_when_deleting_elem_with_nonexisting_id)
 {
-	Stack<int> s(5);
-	ASSERT_ANY_THROW(s.Top());
-}
-
-TEST(Stack, throws_when_underflow)
-{
-	Stack<int> s(10);
-	ASSERT_ANY_THROW(s.Pop());
-}
-
-TEST(Stack, throws_when_overflow)
-{
-	Stack<int> s(MAX_STACK_SIZE);
-	for (size_t i = 0; i < MAX_STACK_SIZE; i++)
-		s.Push(1);
-	ASSERT_ANY_THROW(s.Push(1));
+	UnsortedTable<Polynomial> s(1);
+	s.Insert("12", Polynomial("x^2"));
+	ASSERT_ANY_THROW(s.Delete("21"));
 }
 
 

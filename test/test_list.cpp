@@ -63,7 +63,7 @@ TEST(List, can_insert_element)
 	List<int> ls(2);
 	ls[0] = 1;
 	ls[1] = 2;
-	ls.Insert(1, 3);
+	ls.Insert_by_index(1, 3);
 	EXPECT_EQ(3, ls[1]);
 }
 
@@ -72,7 +72,7 @@ TEST(List, can_delete_element)
 	List<int> ls(2);
 	ls[0] = 1;
 	ls[1] = 2;
-	ls.Delete(1);
+	ls.Delete_by_index(1);
 	ASSERT_ANY_THROW(ls[1]);
 }
 
