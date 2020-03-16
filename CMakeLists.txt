@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 
+<<<<<<< HEAD
 set(PROJECT_NAME tables)
+=======
+set(PROJECT_NAME list)
+>>>>>>> List
 project(${PROJECT_NAME})
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
