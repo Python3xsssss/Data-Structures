@@ -2,6 +2,7 @@
 #define _TABLE_H_
 
 #include <iostream>
+#include "List.h"
 
 
 
