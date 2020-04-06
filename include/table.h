@@ -28,6 +28,8 @@ public:
 	virtual void Insert(const string& id, const ValType& data) = 0;
 	virtual void Delete(const string& id) = 0;
 
+	virtual size_t GetSize() { return size; }
+
 	template<typename ValType> 
 	friend ostream& operator<<(ostream& out, BasicTable<ValType>& table) = 0;
 };
