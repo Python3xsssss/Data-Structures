@@ -59,6 +59,7 @@ public:
 	void Insert(Node* prev, ValType data);
 	void Insert_by_index(size_t, ValType);
 	void Delete(Node* prev);
+	void Del(Node* elem);
 	void Delete_by_index(size_t);
 	void Set(size_t, ValType);
 	ValType Get(size_t);
@@ -251,6 +252,12 @@ void List<ValType>::Push_top(ValType elem)
 template <typename ValType>
 void List<ValType>::Push_bot(ValType elem)
 {
+	if (top == NULL)
+	{
+		Push_top(elem);
+		return;
+	}
+		
 	Node* tmp = top;
 	while (tmp->next != NULL)
 		tmp = tmp->next;
@@ -364,8 +371,33 @@ void List<ValType>::Delete(Node* prev)
 
 
 template <typename ValType>
+void List<ValType>::Del(Node* elem)
+{
+	if (top == elem)
+	{
+		Pop_top();
+		return;
+	}
+		
+	Node* tmp = top;
+	while (tmp->next != elem)
+		tmp = tmp->next;
+
+	Node* target = tmp->next;
+	tmp->next = target->next;
+	delete target;
+	size--;
+}
+
+
+template <typename ValType>
 void List<ValType>::Delete_by_index(size_t index)
 {
+	if (index == 0)
+	{
+		Pop_top();
+		return;
+	}
 	if (index >= size)
 		throw "Error: incorrect index";
 
