@@ -158,14 +158,14 @@ template<typename ValType>
 inline ValType SortedTable<ValType>::Find(const string& id)
 {
 	int index;
-	if (!BinarySearch(id, lines, size + deleted, index))
+	if (!BinarySearch(id, sub_lines, sub_size, index))
 	{
-		if (!BinarySearch(id, sub_lines, sub_size, index))
+		if (!BinarySearch(id, lines, size + deleted, index))
 			throw "Error: line with the specified id doesn't exist";
-		return sub_lines[index].data;
+		return lines[index].data;
 	}
-	
-	return lines[index].data;
+
+	return sub_lines[index].data;
 }
 
 template<typename ValType>
@@ -191,18 +191,18 @@ template<typename ValType>
 inline void SortedTable<ValType>::Delete(const string& id)
 {
 	int index;
-	if (!BinarySearch(id, lines, size + deleted, index))
+	if (!BinarySearch(id, sub_lines, sub_size, index))
 	{
-		if (!BinarySearch(id, sub_lines, sub_size, index))
+		if (!BinarySearch(id, lines, size + deleted, index))
 			throw "Error: line with the specified id doesn't exist";
-		sub_lines.erase(sub_lines.begin() + index);
-		sub_size--;
+		lines[index].is_deleted = true;
+		size--;
+		deleted++;
 		return;
 	}
-
-	lines[index].is_deleted = true;
-	size--;
-	deleted++;
+	
+	sub_lines.erase(sub_lines.begin() + index);
+	sub_size--;
 }
 
 #endif // !_STABLE_H_
