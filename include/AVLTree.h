@@ -32,7 +32,7 @@ private:
 	Node* LeftRotation(Node* subtree);
 	Node* RightRotation(Node* subtree);
 	Node* Balance(Node* subtree);
-	Node* FindRightMin(Node* subtree) { return (subtree->left == NULL) ? subtree : FindRightMin(subtree->left); }
+	Node* FindMin(Node* subtree) { return (subtree->left == NULL) ? subtree : FindMin(subtree->left); }
 	Node* DelMin(Node* subtree);
 	Node* Search(Node* subtree, size_t key);
 	Node* Ins(Node* subtree, ValType data, size_t key);
@@ -176,7 +176,7 @@ typename inline AVLTree<ValType>::Node* AVLTree<ValType>::Del(Node* subtree, siz
 		if (subsubtree_right == NULL)
 			return subsubtree_left;
 
-		Node* rightmin = FindRightMin(subsubtree_right);
+		Node* rightmin = FindMin(subsubtree_right);
 		rightmin->right = DelMin(subsubtree_right);
 		rightmin->left = subsubtree_left;
 
